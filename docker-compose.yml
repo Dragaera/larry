@@ -1,0 +1,18 @@
+version: '3'
+
+networks:
+  larry-dev:
+
+volumes:
+  database-data:
+
+services:
+  database:
+    image: 'postgres:9.6'
+    env_file: .env.development
+    networks:
+      - larry-dev
+    ports:
+      - 45432:5432
+    volumes:
+      - database-data:/var/lib/postgresql/data
