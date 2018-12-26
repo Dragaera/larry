@@ -1,2 +1,5 @@
 .env*
 !.env.*.dist
+
+# Google API service credentials
+data/google_api.json

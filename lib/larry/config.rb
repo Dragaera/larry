@@ -28,5 +28,14 @@ module Larry
         }
       )
     end
+
+    module Larry
+      ADMIN_USERS = ENV.fetch('LARRY_ADMIN_USERS', '').split(',')
+    end
+
+    module EICStock
+      SESSION_CONFIGURATION_FILE = ENV.fetch('EIC_STOCK_SESSION_CONFIGURATION_FILE', 'data/google_api.json')
+      SPREADSHEET_KEY = ENV.fetch('EIC_STOCK_SPREADSHEET_KEY')
+    end
   end
 end

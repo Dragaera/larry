@@ -3,6 +3,8 @@ group :development, :testing do
   gem 'pry'
 end
 
+gem 'google_drive'
+
 gem 'rake'
 gem 'warning'
 
