@@ -95,8 +95,7 @@ module Larry
         return false unless event.positional_arguments.count == 1
 
         name = event.positional_arguments.first
-        whale = Whale.first(name: name)
-        whale = whale.identity if whale.is_alias?
+        whale = Whale.identity_by_name(name)
 
         unless whale
           event << "Whale '#{ name }' does not exist"
@@ -113,21 +112,13 @@ module Larry
 
         name, new_alias = event.positional_arguments
 
-        whale = Whale.first(name: name)
-        unless whale
-          event << "Whale '#{ name }' does not exist"
-          return true
-        end
-        identity = whale.is_alias? ? whale.identity : whale
+        Whale.alias_whale(name: name, new_alias: new_alias)
 
-        if aliased_whale = Whale.first(name: new_alias)
-          event << "Alias '#{ new_alias }' already taken by whale #{ aliased_whale.identity.name }"
-          return true
-        end
+        event << "Sucessfully added alias #{ new_alias } to whale #{ name }"
+        true
 
-        Whale.create(name: new_alias, identity: identity)
-
-        event << "Sucessfully added alias #{ new_alias } to whale #{ identity.name }"
+      rescue ArgumentError => e
+        event << "Error adding alias: #{ e.message }"
         true
       end
 
@@ -136,20 +127,13 @@ module Larry
 
         existing_alias = event.positional_arguments.first
 
-        aliased_whale = Whale.first(name: existing_alias)
-        unless aliased_whale
-          event << "Alias '#{ existing_alias }' does not exist."
-          return true
-        end
+        identity = Whale.remove_alias(alias_: existing_alias)
 
-        unless aliased_whale.is_alias?
-          event << "'#{ existing_alias }' is not an alias, but a whale account. Use `--remove` instead."
-          return true
-        end
-
-        identity = aliased_whale.identity
-        aliased_whale.destroy
         event << "Sucessfully removed alias #{ existing_alias } from whale #{ identity.name }"
+        true
+
+      rescue ArgumentError => e
+        event << "Error removing alias: #{ e.message }"
         true
       end
 
